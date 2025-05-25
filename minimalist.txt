@@ -1,0 +1,899 @@
+Copy All at once
+
+####
+
+1)
+member(X, [X|_]).            
+member(X, [_|T]) :- member(X, T). 
+move(X,Y,_):- X=:=2, Y=:=0, write('Complete!'), !.
+move(X,Y,Z):- X<4, \+member((4,Y),Z), write("Fill 4l jug"), nl, move(4,Y,[(4,Y)|Z]).
+move(X,Y,Z):- Y<3, \+member((X,3),Z), write("Fill 3l jug"), nl, move(X,3,[(X,3)|z]).
+move(X,Y,Z):- X>0, \+member((0,Y),Z), write("Empty 4l jug"), nl, move(0,Y,[(0,Y)|Z]).
+move(X,Y,Z):- Y>0, \+member((X,0),Z), write("Empty 3l jug"), nl, move(X,0,[(X,0)|Z]).
+move(X,Y,Z):- P is X+Y, P>=4, Y>0, K is 4-X, M is Y-K, \+member((4,M),Z), write("Fill 4l jug
+using 3l jug"), nl, move(4,M,[(4,M)|Z]).
+move(X,Y,Z):- P is X+Y, P>=3, X>0, K is 3-Y, M is X-K, \+member((M,3),Z), write("Fill 3l jug
+using 4l jug"), nl, move(M,3,[(M,3)|Z]).
+move(X,Y,Z):- K is X+Y, K<4, Y>0, \+member((K,0),Z), write("Pour all of 3l jug into 4l jug"),
+nl, move(K,0,[(K,0)|Z]).
+move(X,Y,Z):- K is X+Y, K<3, X>0, \+member((0,K),Z), write("Pour all of 4l jug into 3l jug"),
+nl, move(0,K,[(0,K)|Z]).
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+2)
+
+win(Board, Player) :- rowwin(Board, Player).   
+win(Board, Player) :- colwin(Board, Player). win(Board,   
+Player) :- diagwin(Board, Player).    
+    
+rowwin(Board, Player) :- Board = [Player,Player,Player,_,_,_,_,_,_]. rowwin(Board, Player) :- Board = [_,_,_,Player,Player,Player,_,_,_]. rowwin(Board, Player) :- Board = [_,_,_,_,_,_,Player,Player,Player].    
+    
+colwin(Board, Player) :- Board = [Player,_,_,Player,_,_,Player,_,_]. colwin(Board, Player) :- Board = [_,Player,_,_,Player,_,_,Player,_]. colwin(Board, Player) :- Board = [_,_,Player,_,_,Player,_,_,Player].    
+    
+diagwin(Board, Player) :- Board = [Player,_,_,_,Player,_,_,_,Player]. diagwin(Board, Player) :- Board = [_,_,Player,_,Player,_,Player,_,_].    
+    
+other(x,o). other(o,x).    
+    
+game(Board, Player) :- win(Board, Player), !, write([player, Player, wins]).    
+game(Board, Player) :-    other(Player,Otherplayer),    move(Board,Player,Newboard),    
+  !,    
+  display(Newboard),   game(Newboard,Otherplayer).  move([b,B,C,D,E,F,G,H,I], Player, 
+[Player,B,C,D,E,F,G,H,I]).  move([A,b,C,D,E,F,G,H,I], Player, [A,Player,C,D,E,F,G,H,I]).  move([A,B,b,D,E,F,G,H,I], Player, [A,B,Player,D,E,F,G,H,I]).  move([A,B,C,b,E,F,G,H,I], Player, [A,B,C,Player,E,F,G,H,I]).  move([A,B,C,D,b,F,G,H,I], Player, [A,B,C,D,Player,F,G,H,I]).  move([A,B,C,D,E,b,G,H,I], Player, [A,B,C,D,E,Player,G,H,I]).  move([A,B,C,D,E,F,b,H,I], Player, [A,B,C,D,E,F,Player,H,I]).  move([A,B,C,D,E,F,G,b,I], Player, [A,B,C,D,E,F,G,Player,I]).  
+move([A,B,C,D,E,F,G,H,b], Player,  
+[A,B,C,D,E,F,G,H,Player]).    
+    
+display([A,B,C,D,E,F,G,H,I]) :- write([A,B,C]),nl,write([D,E,F]),nl,   write([G,H,I]),nl,nl.    
+     
+selfgame :-game([b,b,b,b,b,b,b,b,b],x). x_can_win_in_one(Board) :-  
+move(Board,  	x,  	Newboard),  	win(Newboard,  	x).   
+orespond(Board,Newboard) :-    move(Board, o, Newboard),   win(Newboard, o),    
+  !.    
+orespond(Board,Newboard) :-   move(Board, 
+o, 	Newboard),    
+not(x_can_win_in_one(Newboard)).  
+orespond(Board,Newboard) :-   move(Board, o, Newboard). orespond(Board,Newboard) :-   not(member(b,Board)),    
+  !,     
+  write('Cats game!'), nl,   Newboard = Board.   xmove([b,B,C,D,E,F,G,H,I], 1,  [x,B,C,D,E,F,G,H,I]).  
+xmove([A,b,C,D,E,F,G,H,I], 2, [A,x,C,D,E,F,G,H,I]).  
+xmove([A,B,b,D,E,F,G,H,I], 3, [A,B,x,D,E,F,G,H,I]).  
+xmove([A,B,C,b,E,F,G,H,I], 4, [A,B,C,x,E,F,G,H,I]).  
+xmove([A,B,C,D,b,F,G,H,I], 5, [A,B,C,D,x,F,G,H,I]).  
+xmove([A,B,C,D,E,b,G,H,I], 6, [A,B,C,D,E,x,G,H,I]).  
+xmove([A,B,C,D,E,F,b,H,I], 7, [A,B,C,D,E,F,x,H,I]).  
+xmove([A,B,C,D,E,F,G,b,I], 8, [A,B,C,D,E,F,G,x,I]).  
+xmove([A,B,C,D,E,F,G,H,b], 9, 
+[A,B,C,D,E,F,G,H,x]). xmove(Board, 
+_, Board) :- write('Illegal move.'), nl.    
+    
+playo :- explain, playfrom([b,b,b,b,b,b,b,b,b]).    
+    
+explain :-     write('You play X by entering integer positions followed by a period.'),   nl,   display([1,2,3,4,5,6,7,8,9]). playfrom(Board) :- win(Board, x), write('You win!'). playfrom(Board) :- win(Board, o), 
+write('I win!').    
+playfrom(Board) :- read(N),   xmove(Board, N, 
+Newboard),    display(Newboard),   
+orespond(Newboard, Newnewboard),    display(Newnewboard),   playfrom(Newnewboard).    
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+3)
+
+% Goal state
+goal_state(state([1, 2, 3, 4, 5, 6, 7, 8, 0])).
+
+% Move: generate next state by swapping 0 with neighbor
+move(state(Board), state(NewBoard)) :- 
+    swap(Board, NewBoard).
+
+% Swap blank tile (0) with a possible adjacent tile
+swap(Board, NewBoard) :- 
+    nth0(ZeroPos, Board, 0),
+    possible_moves(ZeroPos, Moves),
+    member(SwapPos, Moves),
+    swap_elements(Board, ZeroPos, SwapPos, NewBoard).
+
+% Define possible positions the blank (0) can move to
+possible_moves(0, [1, 3]).
+possible_moves(1, [0, 2, 4]).
+possible_moves(2, [1, 5]).
+possible_moves(3, [0, 4, 6]).
+possible_moves(4, [1, 3, 5, 7]).
+possible_moves(5, [2, 4, 8]).
+possible_moves(6, [3, 7]).
+possible_moves(7, [4, 6, 8]).
+possible_moves(8, [5, 7]).
+
+% Swap two elements in a list
+swap_elements(Board, I, J, NewBoard) :- 
+    nth0(I, Board, ElemI),
+    nth0(J, Board, ElemJ),
+    set_nth(Board, I, ElemJ, TempBoard),
+    set_nth(TempBoard, J, ElemI, NewBoard).
+
+% Replace an element at a given index
+set_nth([_|T], 0, X, [X|T]).
+set_nth([H|T], N, X, [H|R]) :- 
+    N > 0, 
+    N1 is N - 1, 
+    set_nth(T, N1, X, R).
+
+% Heuristic: count of misplaced tiles
+heuristic(state(Board), H) :- 
+    goal_state(state(Goal)), 
+    count_misplaced(Board, Goal, H).
+
+count_misplaced([], [], 0).
+count_misplaced([H|T1], [H|T2], Count) :- 
+    count_misplaced(T1, T2, Count).
+count_misplaced([H1|T1], [H2|T2], Count) :- 
+    H1 \= H2, 
+    count_misplaced(T1, T2, TempCount), 
+    Count is TempCount + 1.
+
+% Hill-climbing search
+hill_climb(State, Path) :- 
+    hill_climb_helper(State, [State], RevPath),
+    reverse(RevPath, Path).
+
+hill_climb_helper(State, Path, Path) :- 
+    goal_state(State).
+
+hill_climb_helper(State, Visited, Path) :- 
+    findall(NextState, (move(State, NextState), \+ member(NextState, Visited)), Moves),
+    Moves \= [],
+    best_move(Moves, BestState),
+    hill_climb_helper(BestState, [BestState|Visited], Path).
+
+% Find move with lowest heuristic
+best_move([Move], Move).
+best_move([H|T], Best) :- 
+    best_move(T, TempBest),
+    heuristic(H, HCost),
+    heuristic(TempBest, TempCost),
+    (HCost < TempCost -> Best = H ; Best = TempBest).   
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+4)
+
+A) Numpy Library:-   
+   
+import numpy as np arr = np.array([10,20,30,40,50,60,70,80,90,100]) indices = np.array([1,3,5]) print("Integer array indexing:", arr[indices]  ) cond = arr>0 print("\n  
+Elements greater than 0:\n ", arr[cond]) 
+   
+Mathematical Operations Using Numpy: -  import numpy as np x = np.array([1,2,3]) y = np.array([4,5,6])  add = x+y print("Addition:", add)  subtract = x-y print("Subtraction:", subtract)  divide = x/y print("Division:", divide)   
+
+   
+Sorting NumPy Records:-
+ import numpy as np  dtypes = [('name', 'S10'), ('grad_year', int), ('cgpa', float)]  values = [('Onkar', 2009,8.5),  
+('Aman', 2010, 9), ('ajay', 2020, 6)]  arr = np.array(values, dtype = dtypes) print("\n Array  sorted by names:\n", np.sort(arr, order = 'name')) print("Array sorted by gradn year and then cgpa:\n", np.sort(arr,order = ['grad_year', 'cgpa']) )   
+  
+
+
+Trigonometry and Exponential Functions in NumPy:- import numpy as np a = np.array([0, np.pi/2, np.pi] ) print("Since values of array elements:", np.sin(a))  a = np.array([0,1,2,3]) print("Exponent of array elements :", np.exp(a)) print("square root of array elements:", np.sqrt(a))  Output:   
+   
+    
+B) Pandas Library: -
+ import pandas as pd import numpy as np  ser = pd.Series() print("PandasSeries:", ser) data = np.array(['a', 'b','b', 'c'])  ser = pd.Series(data) print("Pandas Series:\n" , ser) 
+Output:   
+    
+Pandas DataFrame from Dictionary :- import pandas as pd data = {'Name' :  ['Onkar', 'Mrunal', 'Mohit', 'Abhishek'], 'Runs' : [48,99,100,44]} df = pd.DataFrame(data) print(df) Output:   
+    
+Player Data Analysis with Pandas:- import pandas as pd player_list = [['Omkar', 22, 76,  1300000], ['Virat', 34, 80, 140000], ['ABD', 33, 80, 200000]]  df = pd.DataFrame(player_list, columns=['Name', 'Age', 'Weight', 'Salary']) print(df) dfl = df.iloc[0:2] print(dfl)  specific_cell_value = df.iloc[0,1] print("Specific Cell Value:", specific_cell_value)  filtered_data = df[df['Age'] > 30].iloc[:,:] print("\n Filtered data based on age > 30:\n", filtered_data ) 
+   
+   
+Read 	the 	file 	import 	pandas 	as 	pd 	ipl_auction_df 	= 
+pd.read_csv("C:/Users/Admin/Desktop/OR48/prathamesh.csv")   import pandas 
+as 	pd 	ipl_auction_df 	= 
+pd.read_csv("C:/Users/Admin/Desktop/OR48/prathamesh.csv")  
+ipl_auction_df.shape 	print(ipl_auction_df.shape) 
+print(ipl_auction_df.head(5).transpose())  print(ipl_auction_df.columns)  ipl_auction_df.info()  print(ipl_auction_df[0:5]) print(ipl_auction_df[-5:0])   
+
+   
+   
+  
+C) Matplotlib Library: - import matplotlib.pyplot as plt import numpy as np x=[1,2,3,4,5] y=[10,20,30,40,50] plt.plot(x,y) plt.xlabel('Xaxis') plt.ylabel('Y-axis') plt.title('Simple Line Plot') plt.bar(x,y) plt.scatter(x,y) plt.show()   
+   
+
+   
+Using Single Figure using Subplots import matplotlib.pyplot as plt import numpy as np x=np.linspace(0,10,100) y1=np.sin(x) y2=np.cos(x) fig,(ax1,ax2)=plt.subplots(2,1) ax1.plot(x,y1) ax1.set_title('Sine Wave (48)') ax2.plot(x,y2) ax2.set_title('Cosine Wave') 
+plt.tight_layout() plt.show()   
+   
+
+   
+Using Legend:- import matplotlib.pyplot as plt import numpy as np x = np.linspace(0, 20, 90) y1 = 
+np.sin(x) y2 = np.cos(x)   
+   
+plt.plot(x, y1, label = 'Sine')  plt.plot(x, y2, label = 'Cosine') 
+plt.xlabel('X-axis') plt.ylabel('yaxis') plt.plot(x, y1)   
+   
+plt.plot(x, y2)  
+plt.tight_layout() plt.legend()   
+   
+   
+Matplotlib Integrates With Pandas:-   
+   
+import matplotlib.pyplot as plt import numpy as np import pandas as pd data={'A':[1,2,3,4],'B':[10,15,25,50]} df=pd.DataFrame(data) df.plot(kind='bar') plt.title('Pandas  
+DataFrame Plot') plt.show()   
+   
+
+   
+D) SciPy Libaray:-   
+   
+Exponential and Trigonometric Functions with SciPy   
+   
+import scipy from scipy import special a=special.exp10(3) print(a) b=special.exp2(3) print(b) c=special.sindg(90) print(c) d=special.cosdg(45) print(d)   
+   
+Output:   
+    
+   
+Numerical Integration with SciPy: import scipy from scipy import special from scipy import integrate a=lambda x:special.exp10(x) b=scipy.integrate.quad(a,0,1) 
+print(b)   
+   
+
+   
+E) Scikit Learn.   
+Loading and Viewing the Iris Dataset   
+   
+from sklearn.datasets import load_iris  iris=load_iris() X=iris.data y=iris.target  feature_names=iris.feature_names 
+target_names=iris.target_names print("Feature names:",feature_names) print("Target Names:",target_names) 
+print("/nFirst 10 Rows of X:\n",X[:10])   
+   
+
+   
+Train-Test Split on Iris Dataset:   
+from sklearn.datasets import load_iris  iris=load_iris() X=iris.data y=iris.target   
+from sklearn.model_selection import train_test_split   
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=1) print(X_train.shape) print(X_test.shape)   
+print(y_train.shape) print(y_test.shape)   
+   
+Output:   
+    
+Seaborn:-   
+Data Visualization with Seaborn:-   
+   
+import matplotlib.pyplot as plt import numpy as np import 
+pandas as pd import seaborn as sns data=np.random.normal(size=(20,6))+np.arange(6)/2 sns.boxplot(data=data) plt.title('Seaborn Boxplot') plt.show()   
+   
+
+   
+Using Colors: -   
+   
+import matplotlib.pyplot as plt import numpy as np from matplotlib.colors import LogNorm Z=np.random.rand(4,12) fig,(ax0,ax1)=plt.subplots(2,1) c=ax0.pcolor(Z) ax0.set_title('No edge Image  (48)') c=ax1.pcolor(Z,edgecolors="k",linewidths=5) ax1.set_title('Thick Edge Images (48)') fig.tight_layout() plt.show()   
+   
+   
+ 
+Seaborn Using Kaggle Dataset:-   
+   
+import matplotlib.pyplot as plt import numpy as np import pandas as pd import  seaborn as sb data=pd.read_csv("C:/Users/Admin/Downloads/archive  
+(1)/housing.csv") print(data.corr(numeric_only=True))  
+dataplot=sb.heatmap(data.corr(numeric_only=True),cmap="RdBu",annot=True 
+) plt.show()   
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+5)
+
+import numpy as np
+
+def step_function(x):
+    return np.where(x >= 0, 1, 0)
+
+def perceptron_or(X, y, learning_rate=0.1, epochs=10):
+    # X: (samples, features)
+    n_samples, n_features = X.shape
+    weights = np.zeros(n_features)
+    bias = 0
+
+    for epoch in range(epochs):
+        for idx, x_i in enumerate(X):
+            linear_output = np.dot(x_i, weights) + bias
+            y_pred = step_function(linear_output)
+            error = y[idx] - y_pred
+            # Perceptron update rule
+            weights += learning_rate * error * x_i
+            bias += learning_rate * error
+            print(f"Epoch {epoch+1}, Sample {idx+1}: Weights {weights}, Bias {bias}, Prediction {y_pred}")
+
+    return weights, bias
+
+def main():
+    # OR gate dataset
+    X = np.array([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1]
+    ])
+    y = np.array([0, 1, 1, 1])
+
+    weights, bias = perceptron_or(X, y, learning_rate=0.1, epochs=10)
+    print(f"Trained weights: {weights}, bias: {bias}")
+
+    # Test
+    for x_input in X:
+        result = step_function(np.dot(x_input, weights) + bias)
+        print(f"Input: {x_input}, Output: {result}")
+
+if __name__ == "__main__":
+    main()
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+6)
+
+import numpy as np
+import matplotlib.pyplot as plt
+def mean_squared_error(y_true, y_predicted):
+    cost = np.sum((y_true-y_predicted)**2)/len(y_true)
+    return cost
+def gradient_descent(x, y, iterations=1000, learning_rate=0.0001, stopping_threshold=1e-6):
+    current_weight = 0.1
+    current_bias = 0.01
+    iterations = iterations
+    learning_rate = learning_rate
+    n = float(len(x))
+    costs = []
+    weights = []
+    previous_cost = None
+    for i in range(iterations):
+        y_predicted = (current_weight*x) + current_bias
+        current_cost = mean_squared_error(y, y_predicted)
+        if previous_cost and abs(previous_cost-current_cost) <= stopping_threshold:
+            break
+        previous_cost = current_cost
+        costs.append(current_cost)
+        weights.append(current_weight)
+        weight_derivative = -(2/n)*sum(y-y_predicted)
+        bias_derivative = -(2/n)*sum(y-y_predicted)
+        current_weight = current_weight - (learning_rate*weight_derivative)
+        current_bias = current_bias - (learning_rate*bias_derivative)
+        print(f"iteration {i+1}: cost({current_cost}), weight({current_weight}), bias({current_bias})")
+    plt.figure(figsize=(8, 6))
+    plt.plot(weights, costs)
+    plt.scatter(weights, costs, marker='o', color='red')
+    plt.title("Cost Vs Weights")
+    plt.ylabel("Cost")
+    plt.xlabel("Weight")
+    plt.show()
+    return current_weight, current_bias
+def main():
+    x = np.array([1, 3, 5, 5, 3, 5, 5, 3, 5, 5])
+    y = np.array([6, 5, 4, 2, 4, 4, 2, 1.6, 7, 6])
+    estimated_weight, estimated_bias = gradient_descent(x, y, iterations=2000)
+    print(f"Estimated Weight: {estimated_weight}\nEstimated Bias: {estimated_bias}")
+    y_pred = estimated_weight * x + estimated_bias    
+    plt.figure(figsize=(8,6))
+    plt.scatter(x,y,marker ='o',color='red')
+    plt.plot([min(x),max(x)],[min(y_pred),max(y_pred)],color= 'blue', markerfacecolor='red', markersize = 10, linestyle='dashed')
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.show()
+if __name__ == "__main__":
+    main()
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+7)
+
+import numpy as np
+
+def adaline_or(X, y, learning_rate=0.1, epochs=20):
+    n_samples, n_features = X.shape
+    weights = np.zeros(n_features)
+    bias = 0
+
+    for epoch in range(epochs):
+        # Net input (linear output)
+        linear_output = np.dot(X, weights) + bias
+        # Activation function (identity)
+        y_pred = linear_output
+        # Error calculation
+        errors = y - y_pred
+        # Weights and bias update (batch gradient descent)
+        weights += learning_rate * np.dot(X.T, errors) / n_samples
+        bias += learning_rate * errors.sum() / n_samples
+        cost = (errors ** 2).mean()
+        print(f"Epoch {epoch+1}: Weights {weights}, Bias {bias}, Cost {cost:.4f}")
+
+    return weights, bias
+
+def predict(X, weights, bias):
+    linear_output = np.dot(X, weights) + bias
+    # Step function for binary output
+    return np.where(linear_output >= 0.0, 1, 0)
+
+def main():
+    # OR gate dataset
+    X = np.array([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1]
+    ])
+    y = np.array([0, 0, 0, 1])
+
+    weights, bias = adaline_or(X, y, learning_rate=0.1, epochs=20)
+    print(f"Trained weights: {weights}, bias: {bias}")
+
+    # Test
+    for x_input in X:
+        result = predict(x_input, weights, bias)
+        print(f"Input: {x_input}, Output: {result}")
+
+if __name__ == "__main__":
+    main()
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+8)
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, PowerTransformer, LabelEncoder
+from sklearn.feature_selection import SelectKBest, f_classif, VarianceThreshold
+from sklearn.decomposition import PCA 
+
+file_path = "C:\\Users\Admin\Desktop\HealthDS.csv"
+df= pd.read_csv(file_path)
+print(df.head())
+
+categorical_columns = df.select_dtypes(include=['object']).columns
+print("CategoricalColumms:", categorical_columns)
+
+label_encoders={}
+for col in categorical_columns:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col])
+    label_encoders[col] = le
+    
+print(label_encoders)
+df = df.apply(pd.to_numeric, errors='coerce')
+df.fillna(0, inplace=True)
+
+target_column ='Disease Risk Score'
+if target_column not in df.columns:
+    raise ValueError("Target column not found in dateset")
+    
+X = df.drop(columns=[target_column])
+y = df[target_column]     
+
+if y.isnull().sum() > 0:
+    y.fillna(y.mode()[0], inplace=True)
+    
+if y.dtype=='object':
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+var_thresh = VarianceThreshold(threshold=0)
+X = var_thresh.fit_transform(X)
+
+selector=SelectKBest(score_func=f_classif, k=min(10, X.shape[1]))
+
+X_selected = selector.fit_transform(X,y)
+selected_features=[col for col, keep in zip(df.drop(columns=[target_column]).columns, selector.get_support())if keep]
+print("Selected Features:",selected_features)
+
+scaler=MinMaxScaler()
+X_normalized=scaler.fit_transform(X_selected)
+print(X_normalized)
+
+power_transformer=PowerTransformer(method='yeo-johnson')
+X_transformed = power_transformer.fit_transform(X_normalized)
+
+pca_components = min(5, X_transformed.shape[1])
+
+pca = PCA(n_components=pca_components)
+X_pca = pca.fit_transform(X_transformed)
+print("Explained Varience Ratio:",pca.explained_variance_ratio_)
+
+processed_df = pd.DataFrame(X_pca, columns=[f'PC{i+1}' for i in range(X_pca.shape[1])])
+processed_df['Disease Risk Score'] = y.reset_index(drop=True)
+
+processed_df.to_csv("processed_health_dataset.csv", index=False)
+print("Processed dataset saved successfully.")    
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+9)
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+credit_df=pd.read_csv('credit_risk.csv')
+credit_df.shape
+credit_df.head()
+credit_df.tail()
+credit_df.info()
+credit_df.describe()
+credit_df.Loan_Status.value_counts()
+credit_df.groupby(['Education','Loan_Status']).Education.count()
+sns.barplot(y='Credit_History',x='Loan_Status',hue='Education',data=credit_df)
+plt.show()
+
+100*credit_df.isnull().sum()/credit_df.shape[0]
+object_columns=credit_df.select_dtypes(include=['object']).columns
+numeric_columns=credit_df.select_dtypes(exclude=['object']).columns
+print(object_columns)
+print(numeric_columns)
+for column in object_columns:
+  majority=credit_df[column].value_counts().iloc[0]
+
+  credit_df[column].fillna(majority,inplace=True)
+
+for column in numeric_columns:
+  mean=credit_df[column].mean()
+  credit_df[column].fillna(mean, inplace=True)
+
+credit_df.head()
+credit_df.describe()
+
+credit_df.drop('Loan_ID',axis=1,inplace=True)
+object_columns=credit_df.select_dtypes(include=['object']).columns
+numeric_columns=credit_df.select_dtypes(exclude=['object']).columns
+print(object_columns)
+
+print(numeric_columns)
+
+credit_df[object_columns].Property_Area
+
+credit_df_dummy=pd.get_dummies(credit_df,columns=object_columns)
+credit_df_dummy
+credit_df_dummy.shape
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score,confusion_matrix,classification_report
+import numpy as np
+
+
+import seaborn as sn
+import matplotlib.pyplot as plt
+
+X=credit_df_dummy.drop('Loan_Status', axis=1)
+y=credit_df_dummy.Loan_Status
+train_x, test_x,train_y, test_y= train_test_split(X, y,
+test_size=0.3,random_state=42)
+train_x.shape,test_x.shape
+
+model=LogisticRegression()
+
+model.fit(train_x,train_y)
+LogisticRegression()
+train_y_hat=model.predict(train_x)
+test_y_hat=model.predict(test_x)
+
+print('Train Accuracy',accuracy_score(train_y,train_y_hat))
+print('Test Accuracy',accuracy_score(test_y,test_y_hat))
+
+print(confusion_matrix(train_y,train_y_hat))
+print(confusion_matrix(test_y,test_y_hat))
+
+cnf=confusion_matrix(test_y,test_y_hat)
+class_names=[0,1]#name of the classes\n"
+fig,ax=plt.subplots()
+tick_marks=np.arange(len(class_names))
+plt.xticks(tick_marks,class_names)
+
+
+plt.yticks(tick_marks,class_names)
+cax=ax.imshow(cnf,interpolation='nearest',cmap=plt.cm.Blues)
+plt.title('Confusion Matrix')
+plt.colorbar(cax)
+
+for i in range(len(cnf)):
+  for j in range(len(cnf[0])):
+    ax.text(j,i,cnf[i,j],ha="center",va="center",color="black")
+
+plt.ylabel('True label')
+plt.xlabel('Predicted label')
+plt.tight_layout()
+plt.show()
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+10)
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+
+# 1. Iris डेटा लोड करें
+iris = load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+print(df.head())
+print(iris.target)
+df['target'] = iris.target
+
+# 2. फूलों के नाम जोड़ें
+df['flower_name'] = df.target.apply(lambda x: iris.target_names[x])
+
+# 3. क्लास के हिसाब से डेटा अलग करें (सेटोसा, वर्सिकलर, वर्जिनिका)
+df0 = df[df.target == 0]
+df1 = df[df.target == 1]
+df2 = df[df.target == 2]
+
+# 4. Petal length vs Petal width का scatter plot
+plt.xlabel('Petal Length (cm)')
+plt.ylabel('Petal Width (cm)')
+plt.scatter(df0['petal length (cm)'], df0['petal width (cm)'], color="green", marker='+', label='Setosa')
+plt.scatter(df1['petal length (cm)'], df1['petal width (cm)'], color="blue", marker='.', label='Versicolor')
+plt.scatter(df2['petal length (cm)'], df2['petal width (cm)'], color="red", marker='*', label='Virginica')
+plt.legend()
+plt.show()
+
+# 5. X, y तैयार करें
+X = df.drop(['target', 'flower_name'], axis='columns')
+y = df.target
+
+# 6. ट्रेन-टेस्ट स्प्लिट
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print("Train shape:", X_train.shape)
+print("Test shape:", X_test.shape)
+
+# 7. डिफ़ॉल्ट SVM मॉडल ट्रेन करें
+model = SVC()
+model.fit(X_train, y_train)
+print("Default SVC score:", model.score(X_test, y_test))
+
+# 8. एक sample prediction
+sample = [[4.8, 3.0, 1.5, 0.3]]
+pred = model.predict(sample)
+print("Prediction for sample", sample, ":", iris.target_names[pred][0])
+
+# 9. अलग-अलग C values पर मॉडल ट्रेन व स्कोर करें
+model_C1 = SVC(C=1)
+model_C1.fit(X_train, y_train)
+print("C=1 score:", model_C1.score(X_test, y_test))
+
+model_C4 = SVC(C=4)
+model_C4.fit(X_train, y_train)
+print("C=4 score:", model_C4.score(X_test, y_test))
+
+# 10. अलग gamma value पर मॉडल ट्रेन व स्कोर करें
+model_g = SVC(gamma=2)
+model_g.fit(X_train, y_train)
+print("Gamma=2 score:", model_g.score(X_test, y_test))
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+11)
+
+import pandas as pd
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+df=pd.read_csv("driver-data.csv")
+df.head()
+df.describe()
+df.shape
+
+plt.plot(df.mean_dist_day,df.mean_over_speed_perc,'o')
+plt.xlabel('Mean Distance Per Day')
+plt.ylabel('Mean Over Speed Percentage')
+plt.title('Scatter Plot of Driver Data ', fontsize=20)
+plt.show()
+
+df.head()
+data=df.drop(['id'],axis=1)
+
+cluster_model=KMeans(n_clusters=3)
+cluster_model.fit(data)
+
+df['label']=cluster_model.labels_
+df.head()
+
+df.label.unique()
+df['label'].value_counts()
+
+# Define color and marker lists
+colors = ['r', 'b', 'g', 'c', 'y', 'k']       # red, blue, green, cyan, yellow, black
+markers = ['o', 's', '^', 'D', 'x', 'P']      # circle, square, triangle, diamond, x, plus
+
+plt.figure(figsize=(8,6))
+
+for label in df.label.unique():
+    color = colors[label % len(colors)]
+    marker = markers[label % len(markers)]
+    
+    plt.plot(df.loc[df.label==label, 'mean_dist_day'],
+             df.loc[df.label==label, 'mean_over_speed_perc'],
+             linestyle='',
+             marker=marker,
+             color=color,
+             label=f'Cluster {label}')
+
+plt.xlabel('Mean Distance Per Day')
+plt.ylabel('Mean Over Speed Percentage')
+plt.title('Scatter Plot of Driver Clusters', fontsize=16)
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+cluster_model.cluster_centers_
+
+
+error=[]
+for k in range(1,11):
+  cluster_model=KMeans(k)
+  cluster_model.fit(data)
+  error.append(cluster_model.inertia_)
+
+
+cluster_model.cluster_centers_
+
+error=[]
+for k in range(1,11):
+  cluster_model=KMeans(k)
+  cluster_model.fit(data)
+  error.append(cluster_model.inertia_)
+
+plt.figure(figsize=(8,5))
+plt.plot(range(1,11),error,marker='o')
+plt.xlabel('Number of clusters (k)')
+plt.ylabel('Inertia (sum of squared distances)')
+plt.title('Elbow method to determine optimal k')
+plt.grid(True)
+plt.show() 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+12)
+
+from sklearn import datasets
+iris = datasets.load_iris()
+print(iris.target_names)
+print(iris.feature_names)
+print(iris.data[0:5])
+
+print(iris.target)
+
+import pandas as pd
+data = pd.DataFrame({'Sepal Length':iris.data[:,0],
+'Sepal Width': iris.data[:,1] ,
+'Petal Length': iris.data[:,2] ,
+'Petal Width': iris.data[:,3] ,
+'Species':iris.target })
+data.head()
+
+from sklearn.model_selection import train_test_split
+X = data[['Sepal Length','Sepal Width','Petal Length','Petal Width']]
+y = data['Species']
+train_x, test_x, train_y, test_y = train_test_split(X,y,test_size=0.3, random_state = 42)
+
+from sklearn.ensemble import RandomForestClassifier
+
+clf = RandomForestClassifier(n_estimators = 100)
+clf.fit(train_x,train_y)
+y_pred = clf.predict(test_x)
+
+from sklearn import metrics
+
+print('Accuracy:', metrics.accuracy_score(test_y, y_pred))
+clf.predict([[3,5,4,2]])
+feature_imp = pd.Series(clf.feature_importances_, index =
+iris.feature_names).sort_values(ascending=False)
+print(feature_imp)
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.barplot(x= feature_imp, y = feature_imp.index)
+plt.xlabel('Feature Importance Score')
+plt.ylabel('Features')
+plt.title('Visualizing important features')
+plt.legend()
+plt.show()
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+13)
+
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+from sklearn.metrics import accuracy_score
+
+iris=load_iris()
+X,y=iris.data,iris.target
+
+train_x, test_x, train_y, test_y = train_test_split(X,y,test_size=0.3, random_state = 42)
+
+model1=LogisticRegression(max_iter=1000)
+model2=SVC(probability=True)
+model3=DecisionTreeClassifier()
+
+model1.fit(train_x,train_y)
+pred1=model1.predict(test_x)
+acc1=accuracy_score(test_y,pred1)
+
+model2.fit(train_x,train_y)
+pred2=model2.predict(test_x)
+acc2=accuracy_score(test_y,pred2)
+
+model3.fit(train_x,train_y)
+pred3=model3.predict(test_x)
+acc3=accuracy_score(test_y,pred3)
+
+voting_model=VotingClassifier(estimators=[('lr',model1),('svc',model2),('dt',model3)],voting='soft')
+
+
+voting_model.fit(train_x,train_y)
+y_pred=voting_model.predict(test_x)
+voting_pred=voting_model.predict(test_x)
+voting_acc=accuracy_score(test_y,voting_pred)
+
+print(f"Logistic regression Accuracy :{acc1:.2f}")
+print(f"SVM Accuracy:{acc2:.2f}")
+print(f"Decsion Tree Accuracy:'{acc3:.2f}")
+print(f"Voting Classifier Accuracy: {voting_acc:.2f}")
+
+
+from sklearn.ensemble import GradientBoostingClassifier from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split from sklearn.metrics import accuracy_score
+
+iris=load_iris()
+X,y=iris.data,iris.target
+
+train_x, test_x, train_y, test_y = train_test_split(X,y,test_size=0.3, random_state = 42)
+gbc=GradientBoostingClassifier(n_estimators=100,learning_rate=0.1,max_depth=3,subs
+ample=0.8,random_state=42) gbc.fit(train_x,train_y)
+
+y_pred=gbc.predict(test_x) print("Stochastic Gradeinet Boosting
+Accuracy:",accuracy_score(test_y,y_pred))
+
+from sklearn.ensemble import VotingClassifier from
+sklearn.linear_model import LogisticRegression from
+sklearn.svm import SVC from sklearn.tree import
+DecisionTreeClassifier from sklearn.model_selection import
+train_test_split from sklearn.datasets import load_iris from
+sklearn.metrics import accuracy_score
+
+iris=load_iris()
+X,y=iris.data,iris.target
+
+train_x, test_x, train_y, test_y = train_test_split(X,y,test_size=0.3, random_state = 42)
+
+
+model1=LogisticRegression(max_iter=1000)
+model2=SVC(probability=True)
+model3=DecisionTreeClassifier()
+
+model1.fit(train_x,train_y) pred1=model1.predict(test_x)
+acc1=accuracy_score(test_y,pred1)
+
+model2.fit(train_x,train_y) pred2=model2.predict(test_x)
+acc2=accuracy_score(test_y,pred2)
+
+model3.fit(train_x,train_y) pred3=model3.predict(test_x)
+acc3=accuracy_score(test_y,pred3)
+
+voting_model=VotingClassifier(estimators=[('lr',model1),('svc',model2),('dt',model3)],vot ing='soft')
+
+voting_model.fit(train_x,train_y)
+y_pred=voting_model.predict(test_x)
+voting_pred=voting_model.predict(test_x)
+voting_acc=accuracy_score(test_y,voting_pred)
+
+print(f"Logistic regression Accuracy :{acc1:.2f}") print(f"SVM
+Accuracy:{acc2:.2f}") print(f"Decsion Tree
+Accuracy:'{acc3:.2f}") print(f"Voting Classifier Accuracy:
+{voting_acc:.2f}")
